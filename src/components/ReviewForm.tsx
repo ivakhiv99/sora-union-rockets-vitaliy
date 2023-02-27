@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import UserSelect from './UserSelect'
-
+import UserSelect from './UserSelect';
+import { useState, useEffect } from 'react';
+import { redirect, useNavigate } from "react-router-dom";
 import { StyledInput, StyledButton } from '../styles/common';
 
 const FormWrapper = styled.div`
@@ -52,20 +53,88 @@ const SubmitButton = styled(StyledButton)`
 //TODO: 
 // Create validation
 // Update local storage and redirect back to the list upon submitting
+// Handle user select
+
+// REFACTOR: 
+// create reusable input component
+// try using useReducer for state
 
 const RocketReviewForm = () => {
+    const [title, setTitle] = useState<string>('');
+    const [rocket, setRocket] = useState<string>('');
+    const [review, setReview] = useState<string>('');
+    const [user, setUser] = useState<string>('');
+
+    const [canSubmit, updateCanSubmit] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    //TODO: 
+    // debounse validation (wont be needed after refactoring)
+
+    // REFACTOR: 
+    // create better validation with highlight of incorrect feild
+    // react on click and then validate
+
+    useEffect(() => {
+        const titleValid = title.length > 0;
+        const rocketValid = rocket.length > 0;
+        const reviewValid = review.trim().length > 10;
+        const userValid = user.length > 0;
+        if(titleValid && rocketValid && reviewValid && userValid) {
+            updateCanSubmit(true);
+        }
+    }, [title, rocket, review, user]);
+
+
+    //TODO: 
+    // show some kind of message after successfull 
+    const handleSubmit = () => {
+        const oldList = JSON.parse(localStorage.getItem('mockList')!);
+        const newReview = {
+            title: title,
+            rocketName: rocket,
+            description: review,
+            id: oldList[oldList.length-1].id + 1,
+            userInfo: {
+                login: user,
+            },
+        };
+
+        oldList.push(newReview);
+        localStorage.setItem('mockList', JSON.stringify(oldList));
+        console.log('REVIEW SAVED');
+        setTimeout(() => navigate('/'), 500);
+    }
+
     return (
         <FormWrapper>
             <FormTitle>
                 New Review
             </FormTitle>
-            <ReviewTitle placeholder="Your review's title" />
-            <RocketName placeholder='Rocket name' />
+            <ReviewTitle
+                placeholder="Your review's title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+            />
+            <RocketName 
+                placeholder='Rocket name'
+                value={rocket}
+                onChange={(e) => setRocket(e.target.value)}
+            />
             <TextAreaWrapper>
-                <ReviewText />
+                <ReviewText 
+                    placeholder='Rocket review'
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                />
             </TextAreaWrapper>
-            <UserSelect />
-            <SubmitButton >Create Review</SubmitButton>
+            <UserSelect updateUser={setUser}/>
+            <SubmitButton
+                disabled={!canSubmit}
+                onClick={handleSubmit}
+            >
+                Create Review
+            </SubmitButton>
         </FormWrapper>
     );
 };

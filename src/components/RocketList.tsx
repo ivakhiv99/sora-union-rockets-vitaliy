@@ -36,9 +36,6 @@ const AddNewButton = styled(Link)`
     background-color: #333;
 `;
 
-// TODO:
-// add Create review button at the top of the list with redirect to create review page 
-
 const RocketReviewList = () => {
     const mockRocketReviewList: RocketReview[]  = JSON.parse(localStorage.getItem('mockList') || '[]');
 

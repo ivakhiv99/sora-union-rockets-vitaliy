@@ -29,7 +29,7 @@ const AppWrapper = styled.div`
   position: relative;
 `;
 
-
+//TODO: use uuid for ids
 const mockRocketReviewList = [
   {
       title: 'Falcon 9 is great!',
