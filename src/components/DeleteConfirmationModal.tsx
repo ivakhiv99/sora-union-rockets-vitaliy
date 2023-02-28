@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FlexRow, StyledButton} from '../styles/common';
 import RocketReview from '../types/review';
@@ -50,6 +50,7 @@ interface IDeleteConfirmationModal {
 const DeleteConfirmationModal:FC<IDeleteConfirmationModal> = ({closeModal, id}) => {
     const [cancelDisabled, toggleCancelDisabled] = useState<boolean>(false);
     const submitButton = useRef(null);
+    const background = useRef(null);
 
     const handleDelete = () => {
         if(submitButton.current) {
@@ -62,8 +63,25 @@ const DeleteConfirmationModal:FC<IDeleteConfirmationModal> = ({closeModal, id}) 
         setTimeout(closeModal, 500);
     };
 
+    useEffect(() => {
+        const handleBackgroundClick = (e: Event) => {
+            if(e.target === background.current) {
+                closeModal();
+            }
+        }
+
+        if(background.current) {
+            (background.current as HTMLElement).addEventListener('click', handleBackgroundClick);
+        }
+        return () => {
+            if(background.current) {
+                (background.current as HTMLElement).removeEventListener('click', handleBackgroundClick);
+            }
+        }
+    }, []);
+
     return (
-        <ModalBackground>
+        <ModalBackground ref={background}>
             <ModalWrapper>
                 <ConfirmationText>Are you sure you want to delete this review?</ConfirmationText>
                 <Buttons>
