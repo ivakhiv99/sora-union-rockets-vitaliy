@@ -51,8 +51,6 @@ const SubmitButton = styled(StyledButton)`
 
 
 //TODO: 
-// Create validation
-// Update local storage and redirect back to the list upon submitting
 // Handle user select
 
 // REFACTOR: 
@@ -87,7 +85,7 @@ const RocketReviewForm = () => {
 
 
     //TODO: 
-    // show some kind of message after successfull 
+    // show some kind of message after successfull submit
     const handleSubmit = () => {
         const oldList = JSON.parse(localStorage.getItem('mockList')!);
         const newReview = {

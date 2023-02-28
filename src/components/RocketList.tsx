@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import RocketReview from '../types/review';
 import { FlexRow } from '../styles/common';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const ListWrapper = styled.div`
     width: 500px;
@@ -37,7 +38,22 @@ const AddNewButton = styled(Link)`
 `;
 
 const RocketReviewList = () => {
-    const mockRocketReviewList: RocketReview[]  = JSON.parse(localStorage.getItem('mockList') || '[]');
+    const [reviewList, updateReviewList] = useState<RocketReview[]>([]);
+
+    useEffect(() => {
+        const handleStorageUpdate = () => {
+            const mockRocketReviewList: RocketReview[]  = JSON.parse(localStorage.getItem('mockList') || '[]');
+            updateReviewList(mockRocketReviewList);
+        }
+
+        handleStorageUpdate();
+
+        window.addEventListener('storage update', handleStorageUpdate);
+
+        return () => {
+            window.removeEventListener('storage update', handleStorageUpdate);
+        }
+    }, []);
 
     return (
        <ListWrapper>
@@ -45,7 +61,7 @@ const RocketReviewList = () => {
                 <FormTitle>List of Rockets</FormTitle>
                 <AddNewButton to='/new-review' />
             </ListHeader>
-            {mockRocketReviewList.map((rocketReview) => <RocketReviewItem data={rocketReview} key={rocketReview.id} />)}
+            {reviewList.map((rocketReview) => <RocketReviewItem data={rocketReview} key={rocketReview.id} />)}
        </ListWrapper>
     )
 };

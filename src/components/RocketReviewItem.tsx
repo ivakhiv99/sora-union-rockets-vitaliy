@@ -64,8 +64,7 @@ interface RocketREviewProps {
 // redirect user to review details page on item click
 // handle edit button click: redirect user to create review page with prefilled feilds
 // handle delete button click:  
-//  - show modal with confirmation 
-//  - delete review
+//  - show modal with confirmation
 
 const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
     const {
@@ -73,8 +72,15 @@ const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
         rocketName,
         description,
         userInfo,
+        id,
     } = data;
     
+    const handleDelete = () => {
+        const oldList = JSON.parse(localStorage.getItem('mockList')!);
+        localStorage.setItem('mockList', JSON.stringify(oldList.filter((item: RocketReview) => item.id !== id)));
+        window.dispatchEvent(new Event('storage update'));
+    };  
+
     return (
         <ReviewItem>
             <ImgPlaceholder/>
@@ -83,7 +89,7 @@ const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
                     <ReviewTitle>{title}</ReviewTitle>
                     <FlexRow>
                         <EditPlaceholder/>
-                        <DeletePlaceholder/>
+                        <DeletePlaceholder onClick={handleDelete}/>
                     </FlexRow>
                 </FlexRow>
                 <RocketName>{rocketName}</RocketName>
