@@ -4,15 +4,13 @@ import RocketReview from '../types/review';
 import { FlexRow } from '../styles/common';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 
 const ListWrapper = styled.div`
     width: 500px;
     min-height: 800px;
     border-radius: 20px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -39,6 +37,8 @@ const AddNewButton = styled(Link)`
 
 const RocketReviewList = () => {
     const [reviewList, updateReviewList] = useState<RocketReview[]>([]);
+    const [confirmationModal, toggleConfirmationModal] = useState<boolean>(false);
+    const [selectedId, updateSelectedId] = useState<number | null>(null);
 
     useEffect(() => {
         const handleStorageUpdate = () => {
@@ -49,11 +49,23 @@ const RocketReviewList = () => {
         handleStorageUpdate();
 
         window.addEventListener('storage update', handleStorageUpdate);
-
         return () => {
             window.removeEventListener('storage update', handleStorageUpdate);
-        }
+        };
     }, []);
+
+    useEffect(() => {
+        const openModal = (e: CustomEventInit) => {
+            updateSelectedId(e.detail.reviewId);
+            toggleConfirmationModal(true);
+        }
+
+        window.addEventListener('trigger confirmation', openModal);
+        return () => {
+            window.removeEventListener('trigger confirmation', openModal);
+        };
+    }, []);
+
 
     return (
        <ListWrapper>
@@ -61,6 +73,7 @@ const RocketReviewList = () => {
                 <FormTitle>List of Rockets</FormTitle>
                 <AddNewButton to='/new-review' />
             </ListHeader>
+            {confirmationModal && <DeleteConfirmationModal id={selectedId} closeModal={() => toggleConfirmationModal(false)} />}
             {reviewList.map((rocketReview) => <RocketReviewItem data={rocketReview} key={rocketReview.id} />)}
        </ListWrapper>
     )

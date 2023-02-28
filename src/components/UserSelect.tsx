@@ -18,10 +18,11 @@ const SelectInput = styled.input`
 //
 
 interface IUserSelect {
-    updateUser: React.Dispatch<React.SetStateAction<string>>
+    updateUser: React.Dispatch<React.SetStateAction<string>>;
+    defaultValue: string | null;
 }
 
-const UserSelect: FC<IUserSelect> = ({updateUser}) => {
+const UserSelect: FC<IUserSelect> = ({updateUser, defaultValue}) => {
     const [searchString, updateSearchString] = useState<string>('');
     const users = useRequest();
     
@@ -29,6 +30,13 @@ const UserSelect: FC<IUserSelect> = ({updateUser}) => {
         console.log('SEARCH', searchString)
     }, 300);
     
+
+    useEffect(() => {
+        if (defaultValue) {
+            updateSearchString(defaultValue);
+        }
+    }, [defaultValue]);
+
     //TODO: 
     //debounse update
     useEffect( () => {
@@ -38,7 +46,8 @@ const UserSelect: FC<IUserSelect> = ({updateUser}) => {
 
     return (
         <SelectInput 
-            value={searchString} 
+            value={searchString}
+            disabled={!!defaultValue}
             onChange={(e) => updateSearchString(e.target.value)} 
         />
     );

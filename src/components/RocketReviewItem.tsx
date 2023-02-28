@@ -2,6 +2,7 @@ import { FC } from 'react'
 import styled from 'styled-components';
 import { FlexRow, ButtonPlaceholder } from '../styles/common';
 import RocketReview from '../types/review';
+import { useNavigate } from 'react-router-dom';
 
 const ReviewItem = styled.div`
     width: 100%;
@@ -75,11 +76,11 @@ const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
         id,
     } = data;
     
-    const handleDelete = () => {
-        const oldList = JSON.parse(localStorage.getItem('mockList')!);
-        localStorage.setItem('mockList', JSON.stringify(oldList.filter((item: RocketReview) => item.id !== id)));
-        window.dispatchEvent(new Event('storage update'));
-    };  
+    const navigate = useNavigate();
+
+    const handleDelete = () => window.dispatchEvent(new CustomEvent('trigger confirmation', { detail: { reviewId: id } }));
+
+    const handleEdit = () => navigate(`/edit-review/${id}`);
 
     return (
         <ReviewItem>
@@ -88,7 +89,7 @@ const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
                 <FlexRow>
                     <ReviewTitle>{title}</ReviewTitle>
                     <FlexRow>
-                        <EditPlaceholder/>
+                        <EditPlaceholder onClick={handleEdit}/>
                         <DeletePlaceholder onClick={handleDelete}/>
                     </FlexRow>
                 </FlexRow>

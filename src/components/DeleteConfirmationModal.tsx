@@ -1,29 +1,87 @@
-import { useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FlexRow, StyledButton} from '../styles/common';
+import RocketReview from '../types/review';
 
+const ModalBackground = styled.div`
+    width: 100%;
+    height: 100%;
+    z-index: 90;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 20px;
+`;
 
-const DeleteConfirmationModal = () => {
-    const [modalOpen, updateModalOpen] = useState(true);
+const ModalWrapper = styled.div`
+    width: 430px;
+    height: 200px;
+    padding: 0 25px;
+    background-color: #b25555;
+    border-radius: 15px;
+    z-index: 99;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
 
+const ConfirmationText = styled.h3`
+    margin-bottom: 35px;
+    font-size: 22px;
+    font-weight: 400;
+`;
 
-    const handleClose = () => updateModalOpen(false);
+const Buttons = styled(FlexRow)`
+    width: 90%;
+    justify-content: space-around;
+`;
 
-    //TODO: 
-    //Handle Delete here
-    //Show message for successfull review delition
+interface IDeleteConfirmationModal {
+    closeModal: () => void;
+    id: number | null;
+}
+
+const DeleteConfirmationModal:FC<IDeleteConfirmationModal> = ({closeModal, id}) => {
+    const [cancelDisabled, toggleCancelDisabled] = useState<boolean>(false);
+    const submitButton = useRef(null);
+
     const handleDelete = () => {
-        setTimeout(handleClose, 1000);
+        if(submitButton.current) {
+            (submitButton.current as HTMLElement).innerHTML = 'Done';
+        }
+        toggleCancelDisabled(true);
+        const oldList = JSON.parse(localStorage.getItem('mockList')!);
+        localStorage.setItem('mockList', JSON.stringify(oldList.filter((item: RocketReview) => item.id !== id)));
+        window.dispatchEvent(new Event('storage update'));
+        setTimeout(closeModal, 500);
     };
 
     return (
-        <div className="ModalWrapper">
-            <div className="ConfirmationText">Are you sure you want to delete this review?</div>
-            <FlexRow>
-                <StyledButton onClick={handleClose}>Nevermind</StyledButton>
-                <StyledButton onClick={handleDelete}>Delete</StyledButton>
-            </FlexRow>
-        </div>
+        <ModalBackground>
+            <ModalWrapper>
+                <ConfirmationText>Are you sure you want to delete this review?</ConfirmationText>
+                <Buttons>
+                    <StyledButton 
+                        onClick={closeModal}
+                        disabled={cancelDisabled}
+                    >
+                        Nevermind
+                    </StyledButton>
+                    <StyledButton
+                        ref={submitButton}
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </StyledButton>
+                </Buttons>
+            </ModalWrapper>
+        </ModalBackground>
     );
 };
 

@@ -18,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: '/new-review',
     element: <RocketReviewForm />
+  },
+  {
+    path: '/edit-review/:reviewId',
+    element: <RocketReviewForm />
   }
 ]);
 
@@ -26,7 +30,9 @@ const AppWrapper = styled.div`
   height: 100vh;
   padding: 150px;
   background-color: #777;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 //TODO: use uuid for ids

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import UserSelect from './UserSelect';
 import { useState, useEffect } from 'react';
-import { redirect, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { StyledInput, StyledButton } from '../styles/common';
+import RocketReview from '../types/review';
 
 const FormWrapper = styled.div`
     width: 500px;
@@ -56,6 +57,7 @@ const SubmitButton = styled(StyledButton)`
 // REFACTOR: 
 // create reusable input component
 // try using useReducer for state
+// create reusable function to find item in list?
 
 const RocketReviewForm = () => {
     const [title, setTitle] = useState<string>('');
@@ -64,7 +66,23 @@ const RocketReviewForm = () => {
     const [user, setUser] = useState<string>('');
 
     const [canSubmit, updateCanSubmit] = useState<boolean>(false);
+    const [editMode, toggleEditMode] = useState<boolean>(false);
+
     const navigate = useNavigate();
+    const { reviewId } = useParams();
+
+    useEffect(() => {
+        // location === 'edit-review' && 
+        if(reviewId) {
+            toggleEditMode(true);
+            const reviewList = JSON.parse(localStorage.getItem('mockList')!);
+            const currentReview = reviewList!.find((review: RocketReview) => review.id === +reviewId);
+            setTitle(currentReview.title);
+            setRocket(currentReview.rocketName);
+            setReview(currentReview.description);
+            setUser(currentReview.userInfo.login);
+        }
+    }, []);
 
     //TODO: 
     // debounse validation (wont be needed after refactoring)
@@ -92,17 +110,24 @@ const RocketReviewForm = () => {
             title: title,
             rocketName: rocket,
             description: review,
-            id: oldList[oldList.length-1].id + 1,
+            id: editMode ? reviewId : oldList[oldList.length-1].id + 1,
             userInfo: {
                 login: user,
             },
         };
 
-        oldList.push(newReview);
+        if (editMode) {
+            const index = oldList.indexOf(oldList.find((review: RocketReview) => review.id === +reviewId!))
+            oldList.splice(index, 1, newReview);
+        } else {
+            oldList.push(newReview);
+        }
         localStorage.setItem('mockList', JSON.stringify(oldList));
         console.log('REVIEW SAVED');
         setTimeout(() => navigate('/'), 500);
     }
+
+
 
     return (
         <FormWrapper>
@@ -126,7 +151,10 @@ const RocketReviewForm = () => {
                     onChange={(e) => setReview(e.target.value)}
                 />
             </TextAreaWrapper>
-            <UserSelect updateUser={setUser}/>
+            <UserSelect
+                updateUser={setUser}
+                defaultValue={editMode ? user : null}
+            />
             <SubmitButton
                 disabled={!canSubmit}
                 onClick={handleSubmit}
