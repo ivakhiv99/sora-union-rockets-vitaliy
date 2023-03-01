@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import UserSelect from './UserSelect';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-import { StyledInput, StyledButton } from '../styles/common';
+import { StyledInput, StyledButton, FlexRow } from '../styles/common';
 import RocketReview from '../types/review';
+import useDebounse from '../hooks/util';
 
 const FormWrapper = styled.div`
     width: 500px;
@@ -45,9 +46,13 @@ const ReviewText = styled.textarea`
     min-height: 150px;
 `;
 
+const Buttons = styled(FlexRow)`
+    width: 90%;
+    justify-content: space-around;
+`;
+
 const SubmitButton = styled(StyledButton)`
     background-color: #777;
-    margin-left: calc(100%  - 120px);
 `;
 
 
@@ -77,6 +82,7 @@ const RocketReviewForm = () => {
             toggleEditMode(true);
             const reviewList = JSON.parse(localStorage.getItem('mockList')!);
             const currentReview = reviewList!.find((review: RocketReview) => review.id === +reviewId);
+            console.log({reviewList, currentReview});
             setTitle(currentReview.title);
             setRocket(currentReview.rocketName);
             setReview(currentReview.description);
@@ -110,7 +116,7 @@ const RocketReviewForm = () => {
             title: title,
             rocketName: rocket,
             description: review,
-            id: editMode ? reviewId : oldList[oldList.length-1].id + 1,
+            id: editMode ? +reviewId! : oldList[oldList.length-1].id + 1,
             userInfo: {
                 login: user,
             },
@@ -127,6 +133,17 @@ const RocketReviewForm = () => {
         setTimeout(() => navigate('/'), 500);
     }
 
+    const handleDiscard = () => {
+        setTitle('');
+        setRocket('');
+        setReview('');
+        setUser('');
+        navigate('/');
+    }
+
+    const testDebounse = useDebounse(() => {
+        console.log('DEBOUNSED FUNCTION')
+    }, 500);
 
 
     return (
@@ -155,12 +172,19 @@ const RocketReviewForm = () => {
                 updateUser={setUser}
                 defaultValue={editMode ? user : null}
             />
-            <SubmitButton
-                disabled={!canSubmit}
-                onClick={handleSubmit}
-            >
-                Create Review
-            </SubmitButton>
+
+            <Buttons>
+                <SubmitButton onClick={handleDiscard} >
+                    {editMode ? 'Discard' : 'Cancel'} 
+                </SubmitButton>
+                <SubmitButton
+                    disabled={!canSubmit}
+                    onClick={handleSubmit}
+                    // onClick={() => testDebounse()}
+                >
+                    {editMode ? 'Update Review' : 'Create Review'} 
+                </SubmitButton>
+            </Buttons>
         </FormWrapper>
     );
 };

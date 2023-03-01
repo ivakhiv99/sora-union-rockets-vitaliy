@@ -1,17 +1,17 @@
+import { useEffect, useState } from "react";
 
-const useDebounse = (func: Function, timeout = 200) => {
-    let timer: ReturnType<typeof setTimeout>;
+function useDebounse<T> (value: T, timeout = 200)  {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
-    return (...args: unknown[]) => {
-        console.log('clearing timeout')
-        clearTimeout(timer);
-        console.log('setting timeout')
-        timer = setTimeout(
-            () => {
-                func.apply(this, args); 
-            }, timeout
-        )
-    } 
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedValue(value), timeout);
+
+        return () => {
+            clearTimeout(timer);
+        }
+    }, [value, timeout]);
+
+    return debouncedValue;
 };  
 
 export default useDebounse;
