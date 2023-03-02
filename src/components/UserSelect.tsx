@@ -40,9 +40,6 @@ const OptionItem = styled.div`
     align-items: center;
 `;
 
-// TODO: 
-// handle autocomplete
-//
 
 interface IUserSelect {
     updateUser: React.Dispatch<React.SetStateAction<string>>;
@@ -72,12 +69,17 @@ const UserSelect: FC<IUserSelect> = ({updateUser, defaultValue}) => {
         updateOptions(newArr);
     };
 
-    //TODO: 
-    //debounse update
     useEffect( () => {
+        updateUser(searchString)
         handleSearch(searchString);
     }, [searchString]);
-    
+
+    const handleOptionSelect = (option: string) => {
+        updateInputValue(option);
+        updateOptions([]);
+        updateUser(option);
+    };
+
     return (
         <SelectWrapper>
             <SelectInput 
@@ -87,7 +89,16 @@ const UserSelect: FC<IUserSelect> = ({updateUser, defaultValue}) => {
             />
             { options.length ? 
                 <OptionsWrapper>
-                    {options.map((option) => <OptionItem key={option}>{option}</OptionItem>)}
+                    {
+                        options.map((option) => (
+                            <OptionItem
+                                key={option}
+                                onClick={() => handleOptionSelect(option)}
+                            >
+                                {option}
+                            </OptionItem>
+                        ))
+                    }
                 </OptionsWrapper>
                 : null
             }
