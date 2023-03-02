@@ -47,7 +47,7 @@ const ReviewText = styled.textarea`
 `;
 
 const Buttons = styled(FlexRow)`
-    width: 90%;
+    width: 100%;
     justify-content: space-around;
 `;
 
@@ -55,9 +55,6 @@ const SubmitButton = styled(StyledButton)`
     background-color: #777;
 `;
 
-
-//TODO: 
-// Handle user select
 
 // REFACTOR: 
 // create reusable input component

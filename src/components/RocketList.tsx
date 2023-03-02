@@ -1,10 +1,11 @@
 import RocketReviewItem from './RocketReviewItem';
 import styled from 'styled-components';
 import RocketReview from '../types/review';
-import { FlexRow } from '../styles/common';
+import { FlexRow, StyledButton, StyledImg } from '../styles/common';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import addIcon from '../assets/add.png';
 
 const ListWrapper = styled.div`
     width: 500px;
@@ -32,7 +33,11 @@ const AddNewButton = styled(Link)`
     height: 35px;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #333;
+`;
+
+const AddImg = styled.img`
+    width: 35px;
+    height: 35px;
 `;
 
 const RocketReviewList = () => {
@@ -71,7 +76,9 @@ const RocketReviewList = () => {
        <ListWrapper>
             <ListHeader>
                 <FormTitle>List of Rockets</FormTitle>
-                <AddNewButton to='/new-review' />
+                <AddNewButton to='/new-review'>
+                    <AddImg src={addIcon} />
+                </AddNewButton>
             </ListHeader>
             {confirmationModal && <DeleteConfirmationModal id={selectedId} closeModal={() => toggleConfirmationModal(false)} />}
             {reviewList.map((rocketReview) => <RocketReviewItem data={rocketReview} key={rocketReview.id} />)}

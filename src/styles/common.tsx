@@ -34,4 +34,8 @@ const StyledButton = styled.button`
     border-radius: 5px;
 `;
 
-export { FlexRow, ButtonPlaceholder, StyledInput, StyledButton };
+const StyledImg = styled.img`
+
+`;
+
+export { FlexRow, ButtonPlaceholder, StyledInput, StyledButton, StyledImg };

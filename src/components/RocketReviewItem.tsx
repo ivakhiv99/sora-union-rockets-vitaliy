@@ -1,8 +1,10 @@
 import { FC } from 'react'
 import styled from 'styled-components';
-import { FlexRow, ButtonPlaceholder } from '../styles/common';
+import { FlexRow, ButtonPlaceholder, StyledButton } from '../styles/common';
 import RocketReview from '../types/review';
 import { useNavigate } from 'react-router-dom';
+import editIcon from '../assets/edit.png';
+import deleteIcon from '../assets/delete.png';
 
 const ReviewItem = styled.div`
     width: 100%;
@@ -14,6 +16,7 @@ const ReviewItem = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
+    padding: 20px 15px;
 `;
 
 const ImgPlaceholder = styled.div`
@@ -23,12 +26,30 @@ const ImgPlaceholder = styled.div`
     background-color: teal;
 `;
 
-const EditPlaceholder = styled(ButtonPlaceholder)`
-    background-color: gold;
+const ReviewPreview = styled.div`
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `;
 
-const DeletePlaceholder = styled(ButtonPlaceholder)`
-    background-color: red;
+const Buttons = styled(FlexRow)`
+    width: 45px;
+    justify-content: space-between;
+`;
+
+const ControlButton = styled(StyledButton)`
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    padding: 0;
+    background-color: transparent;
+`;
+
+const StyledImg = styled.img`
+    width: 20px;
+    height: 20px;
 `;
 
 const UserAvatarPlaceholder = styled(ButtonPlaceholder)`
@@ -38,23 +59,30 @@ const UserAvatarPlaceholder = styled(ButtonPlaceholder)`
     border-radius: 50%;
 `;
 
+const PreviewHeader = styled(FlexRow)`
+    justify-content: space-between;
+`;
+
 const ReviewTitle = styled.h2`
-    margin: 0;
+    margin: 0  0 5px 0;
     font-size: 22px;
 `;
 
 const RocketName = styled.h3`
-    margin: 0;
+    margin: 0  0 10px 0;
     font-size: 18px;
 `;
 
 const RocketDescription = styled.div`
-    height: 134px;
+    max-height: 134px;
 `;
 
 const UserInfo = styled(FlexRow)`
     align-items: center;
+    position: relative;
+    bottom: 0;
 `;
+
 
 interface RocketREviewProps {
     data: RocketReview
@@ -63,9 +91,6 @@ interface RocketREviewProps {
 
 //TODO: 
 // redirect user to review details page on item click
-// handle edit button click: redirect user to create review page with prefilled feilds
-// handle delete button click:  
-//  - show modal with confirmation
 
 const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
     const {
@@ -85,21 +110,27 @@ const RocketReviewItem: FC<RocketREviewProps> = ({data}) => {
     return (
         <ReviewItem>
             <ImgPlaceholder/>
-            <div className="reviewPreview">
-                <FlexRow>
-                    <ReviewTitle>{title}</ReviewTitle>
-                    <FlexRow>
-                        <EditPlaceholder onClick={handleEdit}/>
-                        <DeletePlaceholder onClick={handleDelete}/>
-                    </FlexRow>
-                </FlexRow>
-                <RocketName>{rocketName}</RocketName>
-                <RocketDescription>{description}</RocketDescription>
+            <ReviewPreview>
+                <div>
+                    <PreviewHeader>
+                        <ReviewTitle>{title}</ReviewTitle>
+                        <Buttons>
+                            <ControlButton onClick={handleEdit}>
+                                <StyledImg src={editIcon}/>
+                            </ControlButton>
+                            <ControlButton onClick={handleDelete}>
+                                <StyledImg src={deleteIcon}/>
+                            </ControlButton>
+                        </Buttons>
+                    </PreviewHeader>
+                    <RocketName>{rocketName}</RocketName>
+                    <RocketDescription>{description}</RocketDescription>
+                </div>
                 <UserInfo>
                     <UserAvatarPlaceholder/>
                     <div className="username">{userInfo?.login}</div>
                 </UserInfo>
-            </div>
+            </ReviewPreview>
         </ReviewItem>
     );
 };
