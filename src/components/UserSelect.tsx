@@ -1,7 +1,5 @@
 import { useState, useEffect, FC } from "react";
 import styled from "styled-components";
-// import useRequest from '../hooks/request';
-import { StyledInput } from '../styles/common';
 import useDebounse from '../hooks/util';
 import mockResponse from '../consts';
 

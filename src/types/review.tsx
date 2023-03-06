@@ -1,4 +1,4 @@
-type RocketReview = {
+export type RocketReview = {
     title: string;
     rocketName: string;
     description: string;
@@ -6,6 +6,11 @@ type RocketReview = {
     userInfo: {
         login: string;
     }
-}
+};
 
-export default RocketReview;
+export type ReviewForm = {
+    title: string;
+    rocket: string;
+    review: string;
+    user: string;
+};

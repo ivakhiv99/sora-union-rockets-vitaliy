@@ -30,12 +30,10 @@ const StyledButton = styled.button`
     width: 120px;
     height: 35px;
     padding: 5px 10px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 5px;
 `;
 
-const StyledImg = styled.img`
-
-`;
-
-export { FlexRow, ButtonPlaceholder, StyledInput, StyledButton, StyledImg };
+export { FlexRow, ButtonPlaceholder, StyledInput, StyledButton };

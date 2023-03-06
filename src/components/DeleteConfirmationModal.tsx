@@ -1,7 +1,8 @@
 import { FC, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FlexRow, StyledButton} from '../styles/common';
-import RocketReview from '../types/review';
+import { FlexRow } from '../styles/common';
+import { RocketReview } from '../types/review';
+import Button from '../components/Button';
 
 const ModalBackground = styled.div`
     width: 100%;
@@ -18,7 +19,7 @@ const ModalWrapper = styled.div`
     width: 430px;
     height: 200px;
     padding: 0 25px;
-    background-color: #b25555;
+    background-color: #fff;
     border-radius: 15px;
     z-index: 99;
     position: absolute;
@@ -85,18 +86,20 @@ const DeleteConfirmationModal:FC<IDeleteConfirmationModal> = ({closeModal, id}) 
             <ModalWrapper>
                 <ConfirmationText>Are you sure you want to delete this review?</ConfirmationText>
                 <Buttons>
-                    <StyledButton 
-                        onClick={closeModal}
+                    <Button 
                         disabled={cancelDisabled}
-                    >
-                        Nevermind
-                    </StyledButton>
-                    <StyledButton
+                        handler={closeModal}
+                        text={'Nevermind'}
+                        positiveAction={true}
+                    />
+                        
+                    <Button
                         ref={submitButton}
-                        onClick={handleDelete}
-                    >
-                        Delete
-                    </StyledButton>
+                        handler={handleDelete}
+                        text={'Delete'}
+                        positiveAction={false}
+                    />
+                        
                 </Buttons>
             </ModalWrapper>
         </ModalBackground>

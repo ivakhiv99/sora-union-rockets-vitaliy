@@ -1,7 +1,7 @@
 import RocketReviewItem from './RocketReviewItem';
 import styled from 'styled-components';
-import RocketReview from '../types/review';
-import { FlexRow, StyledButton, StyledImg } from '../styles/common';
+import { RocketReview } from '../types/review';
+import { FlexRow } from '../styles/common';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
@@ -17,9 +17,6 @@ const ListWrapper = styled.div`
     flex-direction: column;
     padding: 20px;
     max-height: 1200px;
-`;
-
-const FormTitle = styled.h1`
 `;
 
 const ListHeader = styled(FlexRow)`
@@ -75,7 +72,7 @@ const RocketReviewList = () => {
     return (
        <ListWrapper>
             <ListHeader>
-                <FormTitle>List of Rockets</FormTitle>
+                <h1>List of Rockets</h1>
                 <AddNewButton to='/new-review'>
                     <AddImg src={addIcon} />
                 </AddNewButton>

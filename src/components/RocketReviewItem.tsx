@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styled from 'styled-components';
 import { FlexRow, ButtonPlaceholder, StyledButton } from '../styles/common';
-import RocketReview from '../types/review';
+import { RocketReview } from '../types/review';
 import { useNavigate } from 'react-router-dom';
 import editIcon from '../assets/edit.png';
 import deleteIcon from '../assets/delete.png';

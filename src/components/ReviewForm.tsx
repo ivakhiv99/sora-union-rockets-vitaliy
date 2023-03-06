@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import UserSelect from './UserSelect';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
-import { StyledInput, StyledButton, FlexRow } from '../styles/common';
-import RocketReview from '../types/review';
-import useDebounse from '../hooks/util';
+import { StyledInput, FlexRow } from '../styles/common';
+import { RocketReview } from '../types/review';
+import Button from './Button';
 
 const FormWrapper = styled.div`
     width: 500px;
@@ -51,11 +51,6 @@ const Buttons = styled(FlexRow)`
     justify-content: space-around;
 `;
 
-const SubmitButton = styled(StyledButton)`
-    background-color: #777;
-`;
-
-
 // REFACTOR: 
 // create reusable input component
 // try using useReducer for state
@@ -74,12 +69,10 @@ const RocketReviewForm = () => {
     const { reviewId } = useParams();
 
     useEffect(() => {
-        // location === 'edit-review' && 
         if(reviewId) {
             toggleEditMode(true);
             const reviewList = JSON.parse(localStorage.getItem('mockList')!);
             const currentReview = reviewList!.find((review: RocketReview) => review.id === +reviewId);
-            console.log({reviewList, currentReview});
             setTitle(currentReview.title);
             setRocket(currentReview.rocketName);
             setReview(currentReview.description);
@@ -126,7 +119,6 @@ const RocketReviewForm = () => {
             oldList.push(newReview);
         }
         localStorage.setItem('mockList', JSON.stringify(oldList));
-        console.log('REVIEW SAVED');
         setTimeout(() => navigate('/'), 500);
     }
 
@@ -137,11 +129,6 @@ const RocketReviewForm = () => {
         setUser('');
         navigate('/');
     }
-
-    const testDebounse = useDebounse(() => {
-        console.log('DEBOUNSED FUNCTION')
-    }, 500);
-
 
     return (
         <FormWrapper>
@@ -171,16 +158,17 @@ const RocketReviewForm = () => {
             />
 
             <Buttons>
-                <SubmitButton onClick={handleDiscard} >
-                    {editMode ? 'Discard' : 'Cancel'} 
-                </SubmitButton>
-                <SubmitButton
+                <Button
+                    handler={handleDiscard}
+                    text={editMode ? 'Discard' as string : 'Cancel' as string}
+                    positiveAction={false}
+                />
+                <Button
+                    handler={handleSubmit}
+                    text={editMode ? 'Update Review' : 'Create Review'}
                     disabled={!canSubmit}
-                    onClick={handleSubmit}
-                    // onClick={() => testDebounse()}
-                >
-                    {editMode ? 'Update Review' : 'Create Review'} 
-                </SubmitButton>
+                    positiveAction={true}
+                />
             </Buttons>
         </FormWrapper>
     );
